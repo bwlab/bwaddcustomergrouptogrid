@@ -10,6 +10,7 @@ use PrestaShop\PrestaShop\Core\Grid\Column\ColumnCollection;
 use PrestaShop\PrestaShop\Core\Grid\Column\Type\DataColumn;
 use PrestaShop\PrestaShop\Core\Grid\Definition\GridDefinitionInterface;
 use PrestaShop\PrestaShop\Core\Grid\Filter\Filter;
+use PrestaShop\PrestaShop\Core\Search\Filters\CustomerFilters;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class Bwaddcustomergrouptogrid extends Module
@@ -40,14 +41,33 @@ class Bwaddcustomergrouptogrid extends Module
 
     public function install()
     {
-        $this->registerHook('actionCustomerGridDefinitionModifier');
-        return parent::install();
+        return parent::install() && $this->registerHook('actionCustomerGridQueryBuilderModifier')
+            && $this->registerHook('actionCustomerGridDefinitionModifier');
     }
 
     public function uninstall()
     {
 
         return parent::uninstall();
+    }
+
+    public function hookActionCustomerGridQueryBuilderModifier($params)
+    {
+        if (true === (bool)(int)Configuration::get('PS_GROUP_FEATURE_ACTIVE')) {
+            /** @var CustomerFilters $search_criteria */
+            $search_criteria = $params['search_criteria'];
+            $filters = $search_criteria->getFilters();
+
+            $searchQueryBuilder = $params['search_query_builder'];
+
+            $searchQueryBuilder->addSelect('_gl.name as default_group')
+                ->leftJoin('c', _DB_PREFIX_ . 'group_lang', '_gl', 'c.id_default_group = _gl.id_group')
+                ->where('_gl.id_lang = ' . (int)$this->context->language->id);
+            if (isset($filters['default_group']) && !empty($filters['default_group'])) {
+                $search_id_default_group = (int)$filters['default_group'];
+                $searchQueryBuilder->andWhere('_gl.id_group = ' . (int)$search_id_default_group);
+            }
+        }
     }
 
     public function isUsingNewTranslationSystem()
