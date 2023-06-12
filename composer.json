@@ -1,0 +1,26 @@
+{
+    "name": "bwlab/bwaddcustomergrouptogrid",
+    "description": "Add customer group to grid",
+    "homepage": "https://www.bwlab.it",
+    "license": "AFL",
+    "type": "prestashop-module",
+    "authors": [
+        {
+            "name": "Luigi Massa",
+            "email": "lmassa@bwlab.it"
+        }
+    ],
+    "minimum-stability": "stable",
+    "config": {
+        "preferred-install": "dist",
+        "prepend-autoloader": false
+    },
+    "autoload": {
+        "psr-4": {
+            "Bwlab\\CustomerGroup\\": "src/"
+        },
+        "config": {
+            "prepend-autoloader": false
+        }
+    }
+    }
