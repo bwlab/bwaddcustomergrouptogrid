@@ -7,7 +7,7 @@
         'type' => 'prestashop-module',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'dev' => true,
+        'dev' => false,
     ),
     'versions' => array(
         'bwlab/bwaddcustomergrouptogrid' => array(
