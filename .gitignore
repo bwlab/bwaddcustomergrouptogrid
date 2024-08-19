@@ -1,0 +1,4 @@
+vendor
+.htaccess
+index.php
+config_*.xml
